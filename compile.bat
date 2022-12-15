@@ -1,0 +1,1 @@
+g++ main.cpp -I C:\opencv\include -L C:\opencv\x64\mingw\lib -lopencv_core455 -lopencv_highgui455 -lopencv_imgcodecs455
