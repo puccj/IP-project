@@ -98,11 +98,6 @@ int main() {
       for (auto y = 0; y < cols; ++y) {
         locS[x][y] = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
 
-        /*std::cout << "D :" << d << '\n';
-        std::cout << "X :" << x << '\n';
-        std::cout << "Y :" << y << '\n';
-        std::cout << "Local sum: ";
-        std::cout << locS[x][y] << '\n';*/
         mean[x][y] = locS[x][y] / (w*w);
       }
     }
