@@ -111,8 +111,8 @@ int main() {
 
       for (int x = 0; x < d; ++x) {
         for (int y = d; y < rows; ++y) {
-          padded[x][y] = 0;
-          padded[x + rows + d] = 0;
+          padded[x][y] = 0;           //left
+          padded[x + rows + d] = 0;   //right
         }
       }
     }
