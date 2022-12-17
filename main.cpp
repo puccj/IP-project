@@ -7,6 +7,7 @@ double k = 0.2;
 int wTrack = 5;
 int w = 3;
 bool print = false;
+int paddingMode = 1;
 
 static void onkChanged(int value, void*) {
   k = value / 100.0;
@@ -33,6 +34,7 @@ int main() {
   cv::namedWindow("Trackbars");
   cv::createTrackbar("k (/100)", "Trackbars", &kTrack, 100, onkChanged);
   cv::createTrackbar("w", "Trackbars", &wTrack, min, onwChanged);
+  cv::createTrackbar("Padding", "Trackbars", &paddingMode, 1);
   cv::setTrackbarMin("w", "Trackbars", 3);
 
   cv::imshow("Input", image);
@@ -56,10 +58,45 @@ int main() {
     }
 
     //padding: all zeros
-    for (int x = 0; x < d; ++x) {
-      for (int y = 0; y < d; ++y) {
-        padded[x][y] = 0;
-        padded[rows + d + x][cols + d + y] = 0;
+    if (paddingMode == 0) {
+      /*
+      for (int x = 0; x < rows+d; ++x) {
+        for (int y = 0; y < d; ++y) {
+          padded[x][y] = 0;
+          padded[d + x][cols + d + y] = 0;
+        }
+      }
+      for (int x = 0; x < d; ++x) {
+        for (int y = d; y < cols + 2*d; ++y) {
+          padded[x][y] = 0;
+          padded[rows + d + x][y - d] = 0;
+        }
+      }
+      */
+      
+      for (int x = 0; x < rows + 2*d; ++x) {
+        for (int y = 0; y < d; ++y) {
+          padded[x][y] = 0;             //up
+          padded[x][y + cols + d] = 0;  //down
+        }
+      }
+
+      for (int x = 0; x < d; ++x) {
+        for (int y = d; y < rows; ++y) {
+          padded[x][y] = 0;
+          padded[x + rows + d] = 0;
+        }
+      }
+    }
+    else {
+      //padding (copy of the extreme values of the matrix)
+      for (int x = 0; x <d; ++x) {
+        for (int y = 0; y < d; ++y) {
+          padded[x][y] = padded[d][d];
+          padded[x][cols+d+y] =padded[d][cols+d];
+          padded[rows+d+x][y] =padded[rows+d][d];
+          padded[rows+d+x][cols + d + y] =padded[rows+d][cols+d];
+        }
       }
     }
     
