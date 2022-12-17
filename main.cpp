@@ -9,7 +9,6 @@ int kTrack = 20;
 double k = 0.2;
 int wTrack = 5;
 int w = 3;
-bool print = false;
 int paddingMode = 1;
 
 static void onkChanged(int value, void*) {
@@ -30,8 +29,7 @@ int main() {
   std::cout << "Insert file name (with extension): ";
   cv::Mat image;
   do {
-    //std::cin >> path;
-    path = "lenna.jpg";
+    std::cin >> path;
 
     image = cv::imread(path, cv::IMREAD_GRAYSCALE);
     if (image.empty())
@@ -39,43 +37,54 @@ int main() {
   }
   while(image.empty());
 
+
   int rows = image.rows;
   int cols = image.cols;
+  int imgType = image.type();
 
-  int min = rows;
+  //maxW is the min between rows and cols
+  int maxW = rows;
   if (cols < rows)
-    min = cols;
+    maxW = cols;
 
-  /*
-  cv::namedWindow("Trackbars");
-  cv::createTrackbar("k (/100)", "Trackbars", &kTrack, 100, onkChanged);
-  cv::createTrackbar("w", "Trackbars", &wTrack, min, onwChanged);
-  cv::createTrackbar("Padding", "Trackbars", &paddingMode, 1);
-  cv::setTrackbarMin("w", "Trackbars", 3);
+  bool showImage;
+  std::cout << "Do you want to check the computation time (0) or do you want to see the thresholded images (1)? ";
+  std::cin >> showImage;
 
-  cv::imshow("Input", image);
-  */
-
-  int method;
+  int method = 0;
   std::fstream fout;
 
-  std::cout << "-- Methods --\n";
-  std::cout << "0: proposed\n";
-  std::cout << "1: Niblack\n";
-  std::cout << "2: Sauvola\n";
-  std::cout << "3: Bersen\n";
+  if (showImage) {
+    cv::namedWindow("Output", 0);
+    cv::createTrackbar("k (/100)", "Output", &kTrack, 100, onkChanged);
+    cv::createTrackbar("w", "Output", &wTrack, maxW, onwChanged);
+    cv::setTrackbarMin("w", "Output", 3);
+    cv::createTrackbar("Padding", "Output", &paddingMode, 1);
+    cv::createTrackbar("Method", "Output", &method, 3);
 
-  std::cout << "Type number to choose method: ";
-  std::cin >> method;
+    cv::imshow("Input", image);
 
-  if (method == 0)
-    fout.open("proposed.txt", std::ios::out);
-  else if(method == 1)
-    fout.open("niblack.txt", std::ios::out);
-  else if(method == 2)
-    fout.open("sauvola.txt", std::ios::out);
-  else if(method == 3)
-    fout.open("bersen.txt", std::ios::out);
+    std::cout << "\n\nWith focus on the windows, press 'q' to quit and close them, 's' to save the output image.\n";
+  }
+  else {
+    std::cout << "-- Methods --\n";
+    std::cout << "0: proposed\n";
+    std::cout << "1: Niblack\n";
+    std::cout << "2: Sauvola\n";
+    std::cout << "3: Bersen\n";
+
+    std::cout << "Type number to choose method: ";
+    std::cin >> method;
+
+    if (method == 0)
+      fout.open("proposed.txt", std::ios::out);
+    else if(method == 1)
+      fout.open("niblack.txt", std::ios::out);
+    else if(method == 2)
+      fout.open("sauvola.txt", std::ios::out);
+    else if(method == 3)
+      fout.open("bersen.txt", std::ios::out);
+  }
 
   while (true) {
     int d = round(w/2);
@@ -132,31 +141,54 @@ int main() {
     }
 
     //Choose between methods
+    cv::Mat output;
 
-    if (method == 0)
-      proposed(padded, rows, cols, k, w, d, fout /*, image.type()*/);
-    else if (method == 1)
-      niblack(padded, rows, cols, k, w, d, fout /*, image.type()*/);
-    else if (method == 2)
-      sauvola(padded, rows, cols, k, w, d, fout /*, image.type()*/);
-    else if (method == 3)
-      bersen(padded, rows, cols, k, w, d, fout /*, image.type()*/);
+    if (showImage) {
+      if (method == 0)
+        output = proposed(padded, rows, cols, k, w, d, fout, imgType);
+      else if (method == 1)
+        output = niblack(padded, rows, cols, k, w, d, fout, imgType);
+      else if (method == 2)
+        output = sauvola(padded, rows, cols, k, w, d, fout, imgType);
+      else if (method == 3)
+        output = bersen(padded, rows, cols, w, d, fout, imgType);
+    }
+    else {
+      if (method == 0)
+        proposed(padded, rows, cols, k, w, d, fout);
+      else if (method == 1)
+        niblack(padded, rows, cols, k, w, d, fout);
+      else if (method == 2)
+        sauvola(padded, rows, cols, k, w, d, fout);
+      else if (method == 3)
+        bersen(padded, rows, cols, w, d, fout);
+    }
 
     
-    /*
-    cv::imshow("Output", output);
-    int k = cv::waitKey(0);
-    if (k == 'q')
-      break;
-    */
-    w += 2;
+    if (showImage) {
+      cv::imshow("Output", output);
+      int k = cv::waitKey(100);
+      if (k == 'q')         //quit
+        break;
+      if (k == 's') {       //save
+        std::string mName;
+        if (method == 0)      mName = "proposed";
+        else if (method == 0) mName = "niblack";
+        else if (method == 0) mName = "sauvola";
+        else if (method == 0) mName = "bersen";
 
-    if (w > 400)
-      break;
+        cv::imwrite(mName + " - k=" + std::to_string(k) + " - w=" + std::to_string(w) + ".png", output);
+      }
+    }
+    else {
+      w += 2;
+      if (w > maxW)
+        break;
+    }
   }
 
   fout.close();
-  std::cout << "done.\n";
+  std::cout << "\nThank you for using this little program. Bye bye!\n";
 
   return 0;
 }
