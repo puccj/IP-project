@@ -4,7 +4,7 @@
 #include <opencv2/core.hpp>
 
 //cv::Mat proposed(int** padded, int rows, int cols, int k, int w, int d, std::fstream& fout, int imgType) {
-void proposed(int** padded, int rows, int cols, int k, int w, int d, std::fstream& fout) {
+void proposed(int** padded, int rows, int cols, double k, int w, int d, std::fstream& fout) {
   auto t1 = std::chrono::high_resolution_clock::now();   //start time
 
   int** intS = new int*[rows+2*d];

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <opencv2/core.hpp>
 
-void niblack(int** padded, int rows, int cols, int k, int w, int d, std::fstream& fout) {
+void niblack(int** padded, int rows, int cols, double k, int w, int d, std::fstream& fout) {
 //cv::Mat niblack(int** padded, int rows, int cols, int k, int w, int d, std::fstream& fout, int imgType) {
   auto t1 = std::chrono::high_resolution_clock::now();   //start time
 

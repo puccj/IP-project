@@ -3,8 +3,8 @@
 #include <iostream>
 #include <opencv2/core.hpp>
 
-//cv::Mat bersen(int** padded, int rows, int cols, int k, int w, int d, std::fstream& fout, int imgType) {
-void bersen(int** padded, int rows, int cols, int k, int w, int d, std::fstream& fout) {
+//cv::Mat bersen(int** padded, int rows, int cols, int d, std::fstream& fout, int imgType) {
+void bersen(int** padded, int rows, int cols, double k, int w, int d, std::fstream& fout) {
   auto t1 = std::chrono::high_resolution_clock::now();   //start time
 
   //Threshold (Bersen (3))
@@ -16,16 +16,17 @@ void bersen(int** padded, int rows, int cols, int k, int w, int d, std::fstream&
       int min = 255;
       int max = 0;
 
-      for (int i = -d; i < d; ++i) {
-        for (int j = -d; j < d; ++j) {
+      //remind that padded is shifted by d
+      for (int i = 0; i < 2*d; ++i) {
+        for (int j = 0; j < 2*d; ++j) {
           if (padded[x+i][y+j] > max)
-            max = padded[x][y];
+            max = padded[x+i][y+i];
           if (padded[x+i][y+j] < min)
-            min = padded[x][y];
+            min = padded[x+i][y+i];
         }
       }
 
-      double Txy = 0.5* (max + min);
+      double Txy = 0.5*(max + min);
       
       /*
       if (image.at<uchar>(x,y) < Txy)

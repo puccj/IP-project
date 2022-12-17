@@ -4,7 +4,7 @@
 #include <opencv2/core.hpp>
 
 //cv::Mat sauvola(int** padded, int rows, int cols, int k, int w, int d, std::fstream& fout, int imgType) {
-void sauvola(int** padded, int rows, int cols, int k, int w, int d, std::fstream& fout) {
+void sauvola(int** padded, int rows, int cols, double k, int w, int d, std::fstream& fout) {
   auto t1 = std::chrono::high_resolution_clock::now();   //start time
 
   int** squareIntS = new int*[rows+2*d];

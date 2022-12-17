@@ -30,13 +30,14 @@ int main() {
   std::cout << "Insert file name (with extension): ";
   cv::Mat image;
   do {
-    std::cin >> path;
+    //std::cin >> path;
+    path = "lenna.jpg";
 
     image = cv::imread(path, cv::IMREAD_GRAYSCALE);
     if (image.empty())
       std::cout << "Error: can't open image, check name and try again: ";
   }
-  while(!image.empty());
+  while(image.empty());
 
   int rows = image.rows;
   int cols = image.cols;
