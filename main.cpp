@@ -69,9 +69,12 @@ int main() {
   else {
     std::cout << "-- Methods --\n";
     std::cout << "0: proposed\n";
-    std::cout << "1: Niblack\n";
-    std::cout << "2: Sauvola\n";
-    std::cout << "3: Bersen\n";
+    std::cout << "1: Fast Niblack\n";
+    std::cout << "2: Fast Sauvola\n";
+    std::cout << "3: Fast Bersen\n";
+    std::cout << "4: Niblack\n";
+    std::cout << "5: Sauvola\n";
+    std::cout << "6: Bersen\n";
 
     std::cout << "Type number to choose method: ";
     std::cin >> method;
@@ -79,10 +82,16 @@ int main() {
     if (method == 0)
       fout.open("proposed.txt", std::ios::out);
     else if(method == 1)
-      fout.open("niblack.txt", std::ios::out);
+      fout.open("fast-niblack.txt", std::ios::out);
     else if(method == 2)
-      fout.open("sauvola.txt", std::ios::out);
+      fout.open("fast-sauvola.txt", std::ios::out);
     else if(method == 3)
+      fout.open("fast-bersen.txt", std::ios::out);
+    else if(method == 4)
+      fout.open("niblack.txt", std::ios::out);
+    else if(method == 5)
+      fout.open("sauvola.txt", std::ios::out);
+    else if(method == 6)
       fout.open("bersen.txt", std::ios::out);
   }
 
@@ -147,9 +156,9 @@ int main() {
       if (method == 0)
         output = proposed(padded, rows, cols, k, w, d, fout, imgType);
       else if (method == 1)
-        output = niblack(padded, rows, cols, k, w, d, fout, imgType);
+        output = fast_niblack(padded, rows, cols, k, w, d, fout, imgType);
       else if (method == 2)
-        output = sauvola(padded, rows, cols, k, w, d, fout, imgType);
+        output = fast_sauvola(padded, rows, cols, k, w, d, fout, imgType);
       else if (method == 3)
         output = bersen(padded, rows, cols, w, d, fout, imgType);
     }
@@ -157,11 +166,17 @@ int main() {
       if (method == 0)
         proposed(padded, rows, cols, k, w, d, fout);
       else if (method == 1)
-        niblack(padded, rows, cols, k, w, d, fout);
+        fast_niblack(padded, rows, cols, k, w, d, fout);
       else if (method == 2)
-        sauvola(padded, rows, cols, k, w, d, fout);
+        fast_sauvola(padded, rows, cols, k, w, d, fout);
       else if (method == 3)
         bersen(padded, rows, cols, w, d, fout);
+      else if (method == 4)
+        niblack(padded, rows, cols, k, w, d, fout);
+      /*else if (method == 5)
+        sauvola(padded, rows, cols, k, w, d, fout);
+      else if (method == 6)
+        bersen(padded, rows, cols, w, d, fout);*/
     }
 
     
@@ -173,9 +188,9 @@ int main() {
       if (k == 's') {       //save
         std::string mName;
         if (method == 0)      mName = "proposed";
-        else if (method == 0) mName = "niblack";
-        else if (method == 0) mName = "sauvola";
-        else if (method == 0) mName = "bersen";
+        else if (method == 1) mName = "fast-niblack";
+        else if (method == 2) mName = "fast-sauvola";
+        else if (method == 3) mName = "fast-bersen";
 
         cv::imwrite(mName + " - k=" + std::to_string(k) + " - w=" + std::to_string(w) + ".png", output);
       }
