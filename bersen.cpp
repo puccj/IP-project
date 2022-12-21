@@ -48,13 +48,12 @@ cv::Mat bersen(int** padded, int rows, int cols, int w, int d, std::fstream& fou
       int min = 255;
       int max = 0;
 
-      //remind that padded is shifted by d
-      for (int i = 0; i < 2*d; ++i) {
-        for (int j = 0; j < 2*d; ++j) {
-          if (padded[x+i][y+j] > max)
-            max = padded[x+i][y+i];
-          if (padded[x+i][y+j] < min)
-            min = padded[x+i][y+i];
+      for (auto i = x+1; i < x+2*d; ++i) {    //remind that padded is shifted by d. Window goes from x-d+1 to x+d
+        for (auto j = y+1; j < y+2*d; ++j) {
+          if (padded[i][j] > max)
+            max = padded[i][j];
+          if (padded[i][j] < min)
+            min = padded[i][j];
         }
       }
 

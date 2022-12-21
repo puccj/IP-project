@@ -6,13 +6,13 @@
 void proposed(int** padded, int rows, int cols, double k, int w, int d, std::fstream& fout) {
   auto t1 = std::chrono::high_resolution_clock::now();   //start time
 
+  //Integral Sum (g)
   int** intS = new int*[rows+2*d];
   for (int i = 0; i < rows+2*d; i++)
     intS[i] = new int[cols+2*d];
 
-  //Integral Sum (g)
   intS[0][0] = padded[0][0];
-
+    
   for (auto i = 1; i < cols+2*d; ++i) {
     intS[0][i] = padded[0][i] + intS[0][i-1];
   }
@@ -25,25 +25,16 @@ void proposed(int** padded, int rows, int cols, double k, int w, int d, std::fst
     }
   }
 
-  //Local sum (s) and mean
-  double** mean = new double*[rows];
-  for (int i = 0; i < rows; ++i)
-    mean[i] = new double[cols];
-
-
+  //Local sum (s) and local sum of the squared image, mean and std deviation
   for (auto x = 0; x < rows; ++x) {
     for (auto y = 0; y < cols; ++y) {
-      int locSatXY = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
-      mean[x][y] = locSatXY / (w*w);
-    }
-  }
-
-  //Proposed (T)
-
-  for (int x = 0; x < rows; ++x) {
-    for (int y = 0; y < cols; ++y) {
-      double meanDevAtXY = padded[x][y] - mean[x][y];
-      double Txy = mean[x][y] * (1+ k*(meanDevAtXY / (1-meanDevAtXY) -1));
+      int locSumAtXY = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
+      
+      double meanAtXY = locSumAtXY / (w*w);
+      double meanDevAtXY = padded[x+d][y+d] - meanAtXY;
+      
+      //Proposed Threshold (0)
+      double Txy = meanAtXY * (1+ k*(meanDevAtXY / (1-meanDevAtXY) -1));
     }
   }
 

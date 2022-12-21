@@ -147,6 +147,4 @@ void niblack(int** padded, int rows, int cols, double k, int w, int d, std::fstr
   std::chrono::duration<double, std::milli> computTime = t2 - t1; 
   std::cout << "Niblack: w = " << w << "\t Execution time = " << computTime.count() << "ms\n";
   fout << w << '\t' << computTime.count() << '\n';
-
-  //return output;
 }

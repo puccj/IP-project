@@ -173,10 +173,10 @@ int main() {
         bersen(padded, rows, cols, w, d, fout);
       else if (method == 4)
         niblack(padded, rows, cols, k, w, d, fout);
-      /*else if (method == 5)
+      else if (method == 5)
         sauvola(padded, rows, cols, k, w, d, fout);
       else if (method == 6)
-        bersen(padded, rows, cols, w, d, fout);*/
+        bersen(padded, rows, cols, w, d, fout);
     }
 
     
@@ -197,7 +197,7 @@ int main() {
     }
     else {
       w += 2;
-      if (w > maxW)
+      if (w > 45)
         break;
     }
   }
