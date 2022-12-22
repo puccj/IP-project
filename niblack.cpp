@@ -39,8 +39,8 @@ void fast_niblack(int** padded, int rows, int cols, double k, int w, int d, std:
       int locSumAtXY = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
       int squareLocSumAtXY = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
       
-      double meanAtXY = locSumAtXY / (w*w);
-      double stdDevAtXY = squareLocSumAtXY / (w*w) - meanAtXY*meanAtXY;
+      double meanAtXY = locSumAtXY*1.0 / (w*w);
+      double stdDevAtXY = squareLocSumAtXY*1.0 / (w*w) - meanAtXY*meanAtXY;
       
       //Threshold (Niblack (1))
       double Txy = meanAtXY + k*stdDevAtXY;
@@ -94,8 +94,8 @@ cv::Mat fast_niblack(int** padded, int rows, int cols, int k, int w, int d, std:
       int locSumAtXY = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
       int squareLocSumAtXY = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
       
-      double meanAtXY = locSumAtXY / (w*w);
-      double stdDevAtXY = squareLocSumAtXY / (w*w) - meanAtXY*meanAtXY;
+      double meanAtXY = locSumAtXY*1.0 / (w*w);
+      double stdDevAtXY = squareLocSumAtXY*1.0 / (w*w) - meanAtXY*meanAtXY;
       
       //Threshold (Niblack (1))
       double Txy = meanAtXY + k*stdDevAtXY;
@@ -134,8 +134,8 @@ void niblack(int** padded, int rows, int cols, double k, int w, int d, std::fstr
           sumOfSquareAtXY += padded[i][j] * padded[i][j];
         }
       }
-      double meanAtXY = sumAtXY / (w*w);
-      double stdDevAtXY = sumOfSquareAtXY / (w*w) - meanAtXY*meanAtXY;
+      double meanAtXY = sumAtXY*1.0 / (w*w);
+      double stdDevAtXY = sumOfSquareAtXY*1.0 / (w*w) - meanAtXY*meanAtXY;
       
       //Threshold (Niblack (1))
       double Txy = meanAtXY + k*stdDevAtXY;

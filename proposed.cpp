@@ -30,7 +30,7 @@ void proposed(int** padded, int rows, int cols, double k, int w, int d, std::fst
     for (auto y = 0; y < cols; ++y) {
       int locSumAtXY = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
       
-      double meanAtXY = locSumAtXY / (w*w);
+      double meanAtXY = locSumAtXY*1.0 / (w*w);
       double meanDevAtXY = padded[x+d][y+d] - meanAtXY;
       
       //Proposed Threshold (0)
@@ -67,27 +67,18 @@ cv::Mat proposed(int** padded, int rows, int cols, int k, int w, int d, std::fst
     }
   }
 
-  //Local sum (s) and mean
-  double** mean = new double*[rows];
-  for (int i = 0; i < rows; ++i)
-    mean[i] = new double[cols];
+  cv::Mat output(rows, cols, imgType);
 
+  //Local sum (s) and mean
 
   for (auto x = 0; x < rows; ++x) {
     for (auto y = 0; y < cols; ++y) {
       int locSatXY = intS[x+d-1 +d][y+d-1 +d] + intS[x-d +d][y-d +d] - intS[x-d +d][y+d-1 +d] - intS[x+d-1 +d][y-d +d];
-      mean[x][y] = locSatXY / (w*w);
-    }
-  }
+      double meanAtXY = locSatXY*1.0 / (w*w);
+      double meanDevAtXY = padded[x+d][y+d] - meanAtXY;
 
-  //Proposed (T)
-
-  cv::Mat output(rows, cols, imgType);
-
-  for (int x = 0; x < rows; ++x) {
-    for (int y = 0; y < cols; ++y) {
-      double meanDevAtXY = padded[x][y] - mean[x][y];
-      double Txy = mean[x][y] * (1+ k*(meanDevAtXY / (1-meanDevAtXY) -1));
+      //Proposed (T)
+      double Txy = meanAtXY * (1+ k*(meanDevAtXY / (1-meanDevAtXY) -1));
       
       if (padded[x+d][y+d] < Txy)
         output.at<uchar>(x,y) = 0;
